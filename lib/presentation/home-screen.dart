@@ -33,19 +33,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _wordEditController = TextEditingController();
   final _meaningEditController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
+
   late String word;
   late String meaning;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext buildContext) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
       body: BlocConsumer<AddWordCubit, AddWordState>(
@@ -70,12 +66,7 @@ class _HomePageState extends State<HomePage> {
         Padding(
             padding: const EdgeInsets.only(right: 20.0),
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const WordListPage()));
-              },
+              onTap: _launchWordList,
               child: const Icon(
                 Icons.list,
                 size: 26.0,
@@ -114,20 +105,19 @@ class _HomePageState extends State<HomePage> {
 
   TextFormField _buildWordTextFormField() {
     return TextFormField(
-      autofocus: false,
-      controller: _wordEditController,
-      decoration: const InputDecoration(
-          border: UnderlineInputBorder(),
-          labelText: "Add Word",
-          suffixIcon: Icon(Icons.mic)),
-      validator: (value) {
-        if (value != null && value.isEmpty) {
-          return "Please enter word";
-        }
-        return null;
-      },
-      onChanged: (value) => word = value,
-    );
+        autofocus: false,
+        controller: _wordEditController,
+        decoration: const InputDecoration(
+            border: UnderlineInputBorder(),
+            labelText: "Add Word",
+            suffixIcon: Icon(Icons.mic)),
+        validator: (value) {
+          if (value != null && value.isEmpty) {
+            return "Please enter word";
+          }
+          return null;
+        },
+        onChanged: (value) => word = value);
   }
 
   TextFormField _buildMeaningTextFormField() {
@@ -181,5 +171,10 @@ class _HomePageState extends State<HomePage> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
     }
+  }
+
+  void _launchWordList() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const WordListPage()));
   }
 }
