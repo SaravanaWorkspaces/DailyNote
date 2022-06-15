@@ -1,14 +1,13 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-
 import '../model/Word.dart';
 
 class DatabaseHelper {
-  static final DatabaseHelper instance = DatabaseHelper._init();
+  Database? _database;
 
-  static Database? _database;
-
-  DatabaseHelper._init();
+  DatabaseHelper() {
+    database;
+  }
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -34,17 +33,18 @@ class DatabaseHelper {
   }
 
   Future<Word> create(Word word) async {
-    final db = await instance.database;
-    try{
+    print("Creating DB");
+    final db = await database;
+    try {
       final id = await db.insert(tableWord, word.toJson());
       return word.copy(id: id);
-    } catch(e) {
+    } catch (e) {
       throw Exception("Failed");
     }
   }
 
   Future<Word> readWord(int id) async {
-    final db = await instance.database;
+    final db = await database;
     final maps = await db.query(tableWord,
         columns: WordFields.values,
         where: ' ${WordFields.id} = ?',
@@ -59,21 +59,21 @@ class DatabaseHelper {
 
   Future<List<Word>> readAllWords() async {
     const orderBy = '${WordFields.id} ASC';
-    final db = await instance.database;
+    final db = await database;
     final results = await db.query(tableWord, orderBy: orderBy);
-    if(results.isEmpty) return [];
+    if (results.isEmpty) return [];
     return results.map((json) => Word.fromJson(json)).toList();
   }
 
   Future<int> update(Word word) async {
-    final db = await instance.database;
+    final db = await database;
     final result = db.update(tableWord, word.toJson(),
         where: '${WordFields.id}', whereArgs: [word.id]);
     return result;
   }
 
   Future close() async {
-    final db = await instance.database;
+    final db = await database;
     db.close();
   }
 }

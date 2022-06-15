@@ -1,7 +1,9 @@
-import 'package:daily_note/repo/database-helper.dart';
-import 'package:daily_note/model/Word.dart';
+import 'package:daily_note/business_logic/add_word_cubit.dart';
+import 'package:daily_note/business_logic/add_word_state.dart';
+import 'package:daily_note/locator.dart';
 import 'package:daily_note/presentation/word-list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,6 +13,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        home: BlocProvider<AddWordCubit>(
+      create: (_) => getItInstance<AddWordCubit>(),
+      child: const HomePage(),
+    ));
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final _wordEditController = TextEditingController();
+  final _meaningEditController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   late String word;
   late String meaning;
@@ -21,99 +44,142 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            actions: [
-              Padding(
-                  padding: const EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const WordListPage()));
-                    },
-                    child: const Icon(
-                      Icons.list,
-                      size: 26.0,
-                    ),
-                  ))
-            ],
-            title: const Text("Home"),
-          ),
-          body: Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        labelText: "Add Word",
-                        suffixIcon: Icon(Icons.mic)),
-                    validator: (value) {
-                      if (value != null && value.isEmpty) {
-                        return "Please enter word";
-                      }
-                      return null;
-                    },
-                    onChanged: (value) => word = value,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        labelText: "Add Meaning",
-                        suffixIcon: Icon(Icons.mic)),
-                    validator: (value) {
-                      if (value != null && value.isEmpty) {
-                        return "Please enter meaning";
-                      }
-                      return null;
-                    },
-                    onChanged: (value) => meaning = value,
-                  ),
-                  const SizedBox(height: 32),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    child: Center(
-                      child: Text(
-                        "Tap mic icon to record specific values",
-                        style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      child: Align(
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40)),
-                        onPressed: addWord,
-                        child: const Text(" Add Word")),
-                    alignment: Alignment.bottomCenter,
-                  ))
-                ],
-              ),
-            ),
-          )),
+  Widget build(BuildContext buildContext) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: _buildAppBar(),
+      body: BlocConsumer<AddWordCubit, AddWordState>(
+          builder: (_, state) => _addWordForm(),
+          listener: (_, state) {
+            if (state is AddWordSuccess) {
+              _clearFormField();
+            }
+          }),
     );
   }
 
-  addWord() async {
+  void _clearFormField() {
+    _wordEditController.clear();
+    _meaningEditController.clear();
+  }
+
+  //=============Form Widgets =========//
+  AppBar _buildAppBar() {
+    return AppBar(
+      actions: [
+        Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WordListPage()));
+              },
+              child: const Icon(
+                Icons.list,
+                size: 26.0,
+              ),
+            ))
+      ],
+      title: const Text("Home"),
+    );
+  }
+
+  Form _addWordForm() {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Focus(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _buildWordTextFormField(),
+              const SizedBox(height: 20),
+              _buildMeaningTextFormField(),
+              const SizedBox(height: 32),
+              _micHelperText(),
+              Expanded(
+                  child: Align(
+                child: _elevatedButton(),
+                alignment: Alignment.bottomCenter,
+              ))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  TextFormField _buildWordTextFormField() {
+    return TextFormField(
+      autofocus: false,
+      controller: _wordEditController,
+      decoration: const InputDecoration(
+          border: UnderlineInputBorder(),
+          labelText: "Add Word",
+          suffixIcon: Icon(Icons.mic)),
+      validator: (value) {
+        if (value != null && value.isEmpty) {
+          return "Please enter word";
+        }
+        return null;
+      },
+      onChanged: (value) => word = value,
+    );
+  }
+
+  TextFormField _buildMeaningTextFormField() {
+    return TextFormField(
+        controller: _meaningEditController,
+        decoration: const InputDecoration(
+            border: UnderlineInputBorder(),
+            labelText: "Add Meaning",
+            suffixIcon: Icon(Icons.mic)),
+        validator: (value) {
+          if (value != null && value.isEmpty) {
+            return "Please enter meaning";
+          }
+          return null;
+        },
+        onChanged: (value) => meaning = value,
+        onEditingComplete: _addWord);
+  }
+
+  ElevatedButton _elevatedButton() {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(40)),
+        onPressed: _addWord,
+        child: const Text(" Add Word"));
+  }
+
+  Padding _micHelperText() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      child: Center(
+        child: Text(
+          "Tap mic icon to record specific values",
+          style: TextStyle(
+              fontSize: 18.0, color: Colors.grey, fontStyle: FontStyle.italic),
+        ),
+      ),
+    );
+  }
+
+//============ Private functions =======//
+  void _addWord() async {
     final form = _formKey.currentState!;
+    var message = "";
     if (form.validate()) {
       try {
-        await DatabaseHelper.instance
-            .create(Word(word: word, meaning: meaning));
-      } catch (e) {}
+        context.read<AddWordCubit>().addWord(word, meaning);
+        message = "New word added successfully!";
+      } on Exception catch (e) {
+        message = "Error: ${e}";
+      }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
     }
   }
 }

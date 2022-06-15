@@ -1,3 +1,4 @@
+import 'package:daily_note/locator.dart';
 import 'package:daily_note/repo/database-helper.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,8 @@ class _WordListViewState extends State<WordListView> {
   }
 
   Future _fetchWords() async {
-    wordList = await DatabaseHelper.instance.readAllWords();
+    final dbInstance = getItInstance<DatabaseHelper>();
+    wordList = await dbInstance.readAllWords();
     setState(() {});
   }
 

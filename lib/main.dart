@@ -1,54 +1,11 @@
+import 'dart:async';
+
 import 'package:daily_note/presentation/home-screen.dart';
 import 'package:flutter/material.dart';
+import 'package:daily_note/locator.dart' as get_it;
+import 'app.dart';
 
 void main() {
+  unawaited(get_it.init());
   runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(fontFamily: 'Raleway'),
-      title: "Daily Notes",
-      home: const Scaffold(body: SplashScreen()),
-    );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _launchScreen();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFF1976D2),
-      child: const Center(
-        child: Text("Note Daily",
-            style: TextStyle(
-                fontWeight: FontWeight.w300,
-                fontSize: 48,
-                color: Colors.white)),
-      ),
-    );
-  }
-
-  _launchScreen() async {
-    await Future.delayed(const Duration(milliseconds: 2500), () {});
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const HomeScreen()));
-  }
 }
