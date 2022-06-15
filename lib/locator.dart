@@ -1,4 +1,5 @@
 import 'package:daily_note/business_logic/add_word_cubit.dart';
+import 'package:daily_note/business_logic/word_list_cubit.dart';
 import 'package:daily_note/repo/database-helper.dart';
 import 'package:get_it/get_it.dart';
 
@@ -9,4 +10,7 @@ Future<dynamic> init() async {
 
   getItInstance.registerFactory<AddWordCubit>(
       () => AddWordCubit(databaseHelper: getItInstance()));
+
+  getItInstance.registerFactory<WordListCubit>(
+      () => WordListCubit(databaseHelper: getItInstance()));
 }

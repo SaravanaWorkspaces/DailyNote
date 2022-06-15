@@ -1,6 +1,8 @@
+import 'package:daily_note/business_logic/word_list_cubit.dart';
+import 'package:daily_note/business_logic/word_list_state.dart';
 import 'package:daily_note/locator.dart';
-import 'package:daily_note/repo/database-helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../model/Word.dart';
 
@@ -17,7 +19,10 @@ class WordListPage extends StatelessWidget {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context, false)),
         ),
-        body: const WordListView(),
+        body: BlocProvider<WordListCubit>(
+          create: (_) => getItInstance<WordListCubit>(),
+          child: const WordListView(),
+        ),
       ),
     );
   }
@@ -31,26 +36,23 @@ class WordListView extends StatefulWidget {
 }
 
 class _WordListViewState extends State<WordListView> {
-  List<Word> wordList = [];
-
   @override
   void initState() {
-    _fetchWords();
+    context.read<WordListCubit>().loadWordList();
     super.initState();
-  }
-
-  Future _fetchWords() async {
-    final dbInstance = getItInstance<DatabaseHelper>();
-    wordList = await dbInstance.readAllWords();
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return wordList.isEmpty ? _buildFriendlyText() : _buildListView();
+    return BlocBuilder<WordListCubit, WordListState>(builder: (context, state) {
+      if (state is WordList) {
+        return _buildListView(state.data);
+      }
+      return _buildFriendlyText();
+    });
   }
 
-  _buildListView() {
+  ListView _buildListView(List<Word> wordList) {
     return ListView.builder(
         padding: const EdgeInsets.all(8),
         itemCount: wordList.length,
@@ -64,7 +66,7 @@ class _WordListViewState extends State<WordListView> {
         });
   }
 
-  _buildFriendlyText() {
+  Center _buildFriendlyText() {
     return const Center(
       child: Text(
         "Nothing to display",
