@@ -38,6 +38,7 @@ dependencies:
   flutter_bloc: ^8.0.1
   get_it: ^7.2.0
   equatable: ^2.0.3
+  speech_to_text: ^5.5.0
 
 dev_dependencies:
   flutter_test:

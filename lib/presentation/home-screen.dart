@@ -1,5 +1,7 @@
 import 'package:daily_note/business_logic/add_word_cubit.dart';
 import 'package:daily_note/business_logic/add_word_state.dart';
+import 'package:daily_note/business_logic/home_screen_cubit.dart';
+import 'package:daily_note/business_logic/home_screen_state.dart';
 import 'package:daily_note/locator.dart';
 import 'package:daily_note/presentation/word-list.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +18,15 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: BlocProvider<AddWordCubit>(
-      create: (_) => getItInstance<AddWordCubit>(),
+        home: MultiBlocProvider(
+      providers: [
+        BlocProvider<AddWordCubit>(
+          create: (_) => getItInstance<AddWordCubit>(),
+        ),
+        BlocProvider<HomeScreenCubit>(
+          create: (context) => getItInstance<HomeScreenCubit>(),
+        ),
+      ],
       child: const HomePage(),
     ));
   }
@@ -37,6 +46,11 @@ class _HomePageState extends State<HomePage> {
 
   late String word;
   late String meaning;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext buildContext) {
@@ -103,38 +117,62 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  TextFormField _buildWordTextFormField() {
-    return TextFormField(
-        autofocus: false,
-        controller: _wordEditController,
-        decoration: const InputDecoration(
-            border: UnderlineInputBorder(),
-            labelText: "Add Word",
-            suffixIcon: Icon(Icons.mic)),
-        validator: (value) {
-          if (value != null && value.isEmpty) {
-            return "Please enter word";
-          }
-          return null;
-        },
-        onChanged: (value) => word = value);
+  BlocConsumer<HomeScreenCubit, HomeScreenState> _buildWordTextFormField() {
+    return BlocConsumer<HomeScreenCubit, HomeScreenState>(
+      listener: (context, state) {
+        print("listener...................");
+        if (state is ReceiveWordState) {
+          print("listener...................${state.word}");
+          _wordEditController.text = state.word;
+        }
+      },
+      builder: (context, state) {
+        print("building...................");
+        return TextFormField(
+            controller: _wordEditController,
+            autofocus: false,
+            decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                labelText: "Add Word",
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      context.read<HomeScreenCubit>().clickedListenWord();
+                    },
+                    icon: const Icon(Icons.mic))),
+            validator: (value) {
+              if (value != null && value.isEmpty) {
+                return "Please enter word";
+              }
+              return null;
+            },
+            onChanged: (value) => word = value);
+      },
+    );
   }
 
-  TextFormField _buildMeaningTextFormField() {
-    return TextFormField(
-        controller: _meaningEditController,
-        decoration: const InputDecoration(
-            border: UnderlineInputBorder(),
-            labelText: "Add Meaning",
-            suffixIcon: Icon(Icons.mic)),
-        validator: (value) {
-          if (value != null && value.isEmpty) {
-            return "Please enter meaning";
-          }
-          return null;
-        },
-        onChanged: (value) => meaning = value,
-        onEditingComplete: _addWord);
+  BlocBuilder<HomeScreenCubit, HomeScreenState> _buildMeaningTextFormField() {
+    return BlocBuilder<HomeScreenCubit, HomeScreenState>(
+      builder: (context, state) {
+        return TextFormField(
+            controller: _meaningEditController,
+            decoration: InputDecoration(
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      context.read<HomeScreenCubit>().clickedListenMeaning();
+                    },
+                    icon: const Icon(Icons.mic)),
+                border: const UnderlineInputBorder(),
+                labelText: "Add Meaning"),
+            validator: (value) {
+              if (value != null && value.isEmpty) {
+                return "Please enter meaning";
+              }
+              return null;
+            },
+            onChanged: (value) => meaning = value,
+            onEditingComplete: _addWord);
+      },
+    );
   }
 
   ElevatedButton _elevatedButton() {

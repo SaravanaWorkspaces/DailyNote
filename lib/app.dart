@@ -1,6 +1,7 @@
+import 'package:daily_note/locator.dart';
 import 'package:daily_note/presentation/home-screen.dart';
+import 'package:daily_note/service/speech-service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -10,7 +11,7 @@ class App extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(fontFamily: 'Raleway'),
         title: "Daily Notes",
-        home: SplashScreen());
+        home: const SplashScreen());
   }
 }
 
@@ -30,6 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    getItInstance<SpeechService>();
     return Container(
       color: const Color(0xFF1976D2),
       child: const Center(
