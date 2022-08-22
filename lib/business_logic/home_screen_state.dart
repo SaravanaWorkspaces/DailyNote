@@ -5,9 +5,20 @@ class HomeScreenState extends Equatable {
   List<Object?> get props => [];
 }
 
-class HomeScreenInitialState extends HomeScreenState {}
+class HomeScreenInitialState extends HomeScreenState {
+  HomeScreenInitialState(): super();
+}
 
-class ReceiveWordState extends HomeScreenState {
-  String word = '';
-  ReceiveWordState(this.word);
+class UpdateWord extends HomeScreenState {
+  final String? word;
+  UpdateWord(this.word);
+  @override
+  List<Object?> get props => [word];
+}
+
+class UpdateMeaning extends HomeScreenState {
+  final String? word;
+  UpdateMeaning(this.word);
+  @override
+  List<Object?> get props => [word];
 }

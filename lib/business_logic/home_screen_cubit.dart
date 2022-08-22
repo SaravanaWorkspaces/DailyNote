@@ -7,21 +7,19 @@ class HomeScreenCubit extends Cubit<HomeScreenState> {
   HomeScreenCubit() : super(HomeScreenInitialState());
 
   void clickedListenWord() {
-    getItInstance<SpeechService>().startListening(onResult: _speechToTextWord);
+    //getItInstance<SpeechService>().startListening(onResult: _speechToTextWord);
   }
 
   void clickedListenMeaning() {
-    getItInstance<SpeechService>()
-        .startListening(onResult: _speechToTextMeaning);
+    //getItInstance<SpeechService>().startListening(onResult: _speechToTextMeaning);
   }
 
   void _speechToTextWord(String result) {
-    print(result);
-    emit(ReceiveWordState(result));
+    emit(UpdateWord(result));
   }
 
   void _speechToTextMeaning(String result) {
-    print(result);
-    emit(ReceiveWordState(result));
+    print('_speechToTextMeaning ${result}');
+    emit(UpdateWord(result));
   }
 }

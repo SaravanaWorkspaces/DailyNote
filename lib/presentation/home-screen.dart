@@ -1,6 +1,7 @@
 import 'package:daily_note/business_logic/add_word_cubit.dart';
-import 'package:daily_note/business_logic/add_word_state.dart';
+import 'package:daily_note/business_logic/home_screen_bloc.dart';
 import 'package:daily_note/business_logic/home_screen_cubit.dart';
+import 'package:daily_note/business_logic/home_screen_event.dart';
 import 'package:daily_note/business_logic/home_screen_state.dart';
 import 'package:daily_note/locator.dart';
 import 'package:daily_note/presentation/word-list.dart';
@@ -24,7 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
           create: (_) => getItInstance<AddWordCubit>(),
         ),
         BlocProvider<HomeScreenCubit>(
-          create: (context) => getItInstance<HomeScreenCubit>(),
+          create: (_) => getItInstance<HomeScreenCubit>(),
+        ),
+        BlocProvider<HomeScreenBloc>(
+          create: (_) => getItInstance<HomeScreenBloc>(),
         ),
       ],
       child: const HomePage(),
@@ -58,13 +62,7 @@ class _HomePageState extends State<HomePage> {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
-      body: BlocConsumer<AddWordCubit, AddWordState>(
-          builder: (_, state) => _addWordForm(),
-          listener: (_, state) {
-            if (state is AddWordSuccess) {
-              _clearFormField();
-            }
-          }),
+      body: _addWordForm(),
     );
   }
 
@@ -106,10 +104,11 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 32),
               _micHelperText(),
               Expanded(
-                  child: Align(
-                child: _elevatedButton(),
-                alignment: Alignment.bottomCenter,
-              ))
+                child: Align(
+                  child: _elevatedButton(),
+                  alignment: Alignment.bottomCenter,
+                ),
+              )
             ],
           ),
         ),
@@ -117,50 +116,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocConsumer<HomeScreenCubit, HomeScreenState> _buildWordTextFormField() {
-    return BlocConsumer<HomeScreenCubit, HomeScreenState>(
+  BlocConsumer<HomeScreenBloc, HomeScreenState> _buildWordTextFormField() {
+    return BlocConsumer(
+      listenWhen: (previous, current) => current is UpdateWord,
       listener: (context, state) {
-        print("listener...................");
-        if (state is ReceiveWordState) {
-          print("listener...................${state.word}");
-          _wordEditController.text = state.word;
+        if (state is UpdateWord) {
+          _wordEditController.text = state.word as String;
         }
       },
       builder: (context, state) {
-        print("building...................");
         return TextFormField(
             controller: _wordEditController,
             autofocus: false,
-            decoration: InputDecoration(
-                border: const UnderlineInputBorder(),
-                labelText: "Add Word",
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      context.read<HomeScreenCubit>().clickedListenWord();
-                    },
-                    icon: const Icon(Icons.mic))),
             validator: (value) {
               if (value != null && value.isEmpty) {
                 return "Please enter word";
               }
               return null;
             },
+            decoration: InputDecoration(
+              border: const UnderlineInputBorder(),
+              labelText: "Add Word",
+              suffixIcon: IconButton(
+                onPressed: () {
+                  context.read<HomeScreenBloc>().add(ListenWord());
+                },
+                icon: const Icon(Icons.mic),
+              ),
+            ),
             onChanged: (value) => word = value);
       },
     );
   }
 
-  BlocBuilder<HomeScreenCubit, HomeScreenState> _buildMeaningTextFormField() {
-    return BlocBuilder<HomeScreenCubit, HomeScreenState>(
+  BlocConsumer<HomeScreenBloc, HomeScreenState> _buildMeaningTextFormField() {
+    return BlocConsumer(
+      listenWhen: (previous, current) => current is UpdateMeaning,
+      listener: (context, state) {
+        if (state is UpdateMeaning) {
+          _meaningEditController.text = state.word as String;
+        }
+      },
       builder: (context, state) {
         return TextFormField(
             controller: _meaningEditController,
             decoration: InputDecoration(
                 suffixIcon: IconButton(
-                    onPressed: () {
-                      context.read<HomeScreenCubit>().clickedListenMeaning();
-                    },
-                    icon: const Icon(Icons.mic)),
+                  onPressed: () {
+                    context.read<HomeScreenBloc>().add(ListenMeaning());
+                  },
+                  icon: const Icon(Icons.mic),
+                ),
                 border: const UnderlineInputBorder(),
                 labelText: "Add Meaning"),
             validator: (value) {
@@ -204,7 +210,7 @@ class _HomePageState extends State<HomePage> {
         context.read<AddWordCubit>().addWord(word, meaning);
         message = "New word added successfully!";
       } on Exception catch (e) {
-        message = "Error: ${e}";
+        message = "Error: $e";
       }
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));

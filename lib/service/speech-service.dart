@@ -1,5 +1,4 @@
 import 'package:speech_to_text/speech_recognition_error.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class SpeechService {
@@ -8,12 +7,15 @@ class SpeechService {
   SpeechService() {
     _speechToText = SpeechToText();
     _speechToText.initialize(
-        onError: _speechErrorListener, onStatus: _speechStatusListner);
+        onError: _speechErrorListener, onStatus: _speechStatusListener);
   }
 
-  startListening({required onResult}) async {
-    await _speechToText.listen(
-        onResult: (result) => {onResult(result.recognizedWords)});
+  startListening({required resultCallback}) {
+    _speechToText.listen(onResult: (result) {
+      if (result.finalResult) {
+        resultCallback(result.recognizedWords);
+      }
+    });
   }
 
   void stopListening() {
@@ -24,11 +26,7 @@ class SpeechService {
     print('_speechErrorListener: ${error.errorMsg}');
   }
 
-  void _speechStatusListner(String status) {
-    print('_speechStatusListner Status: ${status}');
-  }
-
-  void _speechResult(SpeechRecognitionResult result) {
-    print(result);
+  void _speechStatusListener(String status) {
+    print('_speechStatusListener Status: ${status}');
   }
 }
