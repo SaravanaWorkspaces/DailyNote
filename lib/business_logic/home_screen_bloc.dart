@@ -41,9 +41,9 @@ class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
     emit(UpdateMeaning(event.word));
   }
 
-  void _addWord(AddWord event, Emitter<HomeScreenState> emit) {
+  void _addWord(AddWord event, Emitter<HomeScreenState> emit) async {
     try {
-      getItInstance<DatabaseHelper>()
+      await getItInstance<DatabaseHelper>()
           .create(Word(word: event.word, meaning: event.meaning));
       emit(WordAdded());
     } catch (e) {

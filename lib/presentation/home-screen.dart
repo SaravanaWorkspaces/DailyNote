@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                 Icons.list,
                 size: 26.0,
               ),
-            ))
+            ),)
       ],
       title: const Text("Home"),
     );
