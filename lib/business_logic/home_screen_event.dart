@@ -26,3 +26,12 @@ class UpdateMeaningEvent extends HomeScreenEvent {
   List<Object?> get props => [];
 }
 
+class AddWord extends HomeScreenEvent {
+  final String word;
+  final String meaning;
+
+  AddWord(this.word, this.meaning);
+  
+  @override
+  List<Object?> get props => [word, meaning];
+}

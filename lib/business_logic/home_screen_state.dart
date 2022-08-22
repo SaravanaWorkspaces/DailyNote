@@ -22,3 +22,11 @@ class UpdateMeaning extends HomeScreenState {
   @override
   List<Object?> get props => [word];
 }
+
+class WordAdded extends HomeScreenState {}
+
+class WordFailed extends HomeScreenState {
+  final String message;
+  WordFailed(this.message);
+}
+

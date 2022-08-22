@@ -1,6 +1,6 @@
 import 'package:daily_note/business_logic/add_word_cubit.dart';
+import 'package:daily_note/business_logic/add_word_state.dart';
 import 'package:daily_note/business_logic/home_screen_bloc.dart';
-import 'package:daily_note/business_logic/home_screen_cubit.dart';
 import 'package:daily_note/business_logic/home_screen_event.dart';
 import 'package:daily_note/business_logic/home_screen_state.dart';
 import 'package:daily_note/locator.dart';
@@ -23,9 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
       providers: [
         BlocProvider<AddWordCubit>(
           create: (_) => getItInstance<AddWordCubit>(),
-        ),
-        BlocProvider<HomeScreenCubit>(
-          create: (_) => getItInstance<HomeScreenCubit>(),
         ),
         BlocProvider<HomeScreenBloc>(
           create: (_) => getItInstance<HomeScreenBloc>(),
@@ -181,11 +178,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  ElevatedButton _elevatedButton() {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(40)),
-        onPressed: _addWord,
-        child: const Text(" Add Word"));
+  BlocListener<HomeScreenBloc, HomeScreenState> _elevatedButton() {
+    return BlocListener<HomeScreenBloc, HomeScreenState>(
+        listener: (context, state) {
+          if (state is WordAdded) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("New word added successfully!")));
+          } else if (state is WordFailed) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          }
+        },
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(40)),
+            onPressed: _addWord,
+            child: const Text(" Add Word")));
   }
 
   Padding _micHelperText() {
@@ -204,16 +212,10 @@ class _HomePageState extends State<HomePage> {
 //============ Private functions =======//
   void _addWord() async {
     final form = _formKey.currentState!;
-    var message = "";
     if (form.validate()) {
-      try {
-        context.read<AddWordCubit>().addWord(word, meaning);
-        message = "New word added successfully!";
-      } on Exception catch (e) {
-        message = "Error: $e";
-      }
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
+      word    = _wordEditController.text;
+      meaning = _meaningEditController.text;
+      context.read<HomeScreenBloc>().add(AddWord(word, meaning));
     }
   }
 
