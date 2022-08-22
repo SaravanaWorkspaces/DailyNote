@@ -1,4 +1,3 @@
-import 'package:daily_note/business_logic/add_word_cubit.dart';
 import 'package:daily_note/business_logic/home_screen_bloc.dart';
 import 'package:daily_note/business_logic/home_screen_state.dart';
 import 'package:daily_note/business_logic/word_list_cubit.dart';
@@ -11,9 +10,6 @@ final getItInstance = GetIt.I;
 Future<dynamic> init() async {
   
   getItInstance.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
-
-  getItInstance.registerFactory<AddWordCubit>(
-      () => AddWordCubit(databaseHelper: getItInstance()));
 
   getItInstance.registerFactory<HomeScreenBloc>(() => HomeScreenBloc(HomeScreenInitialState()));
 

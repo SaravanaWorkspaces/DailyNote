@@ -1,4 +1,3 @@
-import 'package:daily_note/business_logic/add_word_cubit.dart';
 import 'package:daily_note/business_logic/home_screen_bloc.dart';
 import 'package:daily_note/business_logic/home_screen_event.dart';
 import 'package:daily_note/business_logic/home_screen_state.dart';
@@ -20,9 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return MaterialApp(
         home: MultiBlocProvider(
       providers: [
-        BlocProvider<AddWordCubit>(
-          create: (_) => getItInstance<AddWordCubit>(),
-        ),
         BlocProvider<HomeScreenBloc>(
           create: (_) => getItInstance<HomeScreenBloc>(),
         ),
@@ -181,6 +177,7 @@ class _HomePageState extends State<HomePage> {
     return BlocListener<HomeScreenBloc, HomeScreenState>(
         listener: (context, state) {
           if (state is WordAdded) {
+            _clearFormField();
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("New word added successfully!")));
           } else if (state is WordFailed) {
