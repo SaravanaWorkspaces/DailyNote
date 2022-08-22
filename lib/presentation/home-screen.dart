@@ -1,5 +1,4 @@
 import 'package:daily_note/business_logic/add_word_cubit.dart';
-import 'package:daily_note/business_logic/add_word_state.dart';
 import 'package:daily_note/business_logic/home_screen_bloc.dart';
 import 'package:daily_note/business_logic/home_screen_event.dart';
 import 'package:daily_note/business_logic/home_screen_state.dart';
