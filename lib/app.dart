@@ -1,6 +1,6 @@
 import 'package:daily_note/locator.dart';
-import 'package:daily_note/presentation/home-screen.dart';
-import 'package:daily_note/service/speech-service.dart';
+import 'package:daily_note/presentation/home_screen.dart';
+import 'package:daily_note/service/speech_service.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {

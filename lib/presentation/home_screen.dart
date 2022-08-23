@@ -1,8 +1,8 @@
-import 'package:daily_note/business_logic/home_screen_bloc.dart';
-import 'package:daily_note/business_logic/home_screen_event.dart';
-import 'package:daily_note/business_logic/home_screen_state.dart';
+import 'package:daily_note/business_logic/homescreen/home_screen_bloc.dart';
+import 'package:daily_note/business_logic/homescreen/home_screen_event.dart';
+import 'package:daily_note/business_logic/homescreen/home_screen_state.dart';
 import 'package:daily_note/locator.dart';
-import 'package:daily_note/presentation/word-list.dart';
+import 'package:daily_note/presentation/word_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

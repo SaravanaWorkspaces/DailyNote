@@ -1,11 +1,10 @@
-import 'package:daily_note/business_logic/home_screen_event.dart';
-import 'package:daily_note/business_logic/home_screen_state.dart';
+import 'package:daily_note/business_logic/homescreen/home_screen_event.dart';
+import 'package:daily_note/business_logic/homescreen/home_screen_state.dart';
 import 'package:daily_note/locator.dart';
 import 'package:daily_note/model/Word.dart';
-import 'package:daily_note/service/speech-service.dart';
+import 'package:daily_note/repo/database-helper.dart';
+import 'package:daily_note/service/speech_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../repo/database-helper.dart';
 
 class HomeScreenBloc extends Bloc<HomeScreenEvent, HomeScreenState> {
   HomeScreenBloc(HomeScreenInitialState initialState) : super(initialState) {
