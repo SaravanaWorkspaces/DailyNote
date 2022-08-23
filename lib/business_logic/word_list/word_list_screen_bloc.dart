@@ -12,6 +12,7 @@ class WordListScreenBloc
 
   void _loadWordList(
       GetWordList event, Emitter<WordListScreenState> emit) async {
+    emit(LoadingList());
     try {
       final db = getItInstance<DatabaseHelper>();
       final list = await db.readAllWords();

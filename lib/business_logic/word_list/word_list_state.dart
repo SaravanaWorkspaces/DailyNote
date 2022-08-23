@@ -8,6 +8,7 @@ class WordListScreenState extends Equatable {
 
 class WordListInitial extends WordListScreenState {}
 
+class LoadingList extends WordListScreenState {}
 class WordListEmpty extends WordListScreenState {
   @override
   List<Object?> get props => [];

@@ -45,8 +45,11 @@ class _WordListViewState extends State<WordListView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WordListScreenBloc, WordListScreenState>(builder: (context, state) {
-      if (state is LoadWordList) {
+    return BlocBuilder<WordListScreenBloc, WordListScreenState>(
+        builder: (context, state) {
+      if (state is LoadingList) {
+        return _showProgressIndicator();
+      } else if (state is LoadWordList) {
         return _buildListView(state.list);
       }
       return _buildFriendlyText();
@@ -58,7 +61,7 @@ class _WordListViewState extends State<WordListView> {
         padding: const EdgeInsets.all(8),
         itemCount: wordList.length,
         itemBuilder: (BuildContext context, int index) {
-          return Container(
+          return SizedBox(
               height: 50,
               child: ListTile(
                 title: Text(wordList[index].word),
@@ -72,6 +75,14 @@ class _WordListViewState extends State<WordListView> {
       child: Text(
         "Nothing to display",
         style: TextStyle(fontSize: 18, color: Colors.grey),
+      ),
+    );
+  }
+
+  Center _showProgressIndicator() {
+    return const Center(
+      child: CircularProgressIndicator(
+        strokeWidth: 5.0,
       ),
     );
   }
