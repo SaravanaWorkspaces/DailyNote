@@ -68,14 +68,15 @@ class _HomePageState extends State<HomePage> {
     return AppBar(
       actions: [
         Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: GestureDetector(
-              onTap: _launchWordList,
-              child: const Icon(
-                Icons.list,
-                size: 26.0,
-              ),
-            ),)
+          padding: const EdgeInsets.only(right: 20.0),
+          child: GestureDetector(
+            onTap: _launchWordList,
+            child: const Icon(
+              Icons.list,
+              size: 26.0,
+            ),
+          ),
+        )
       ],
       title: const Text("Home"),
     );
@@ -109,7 +110,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   BlocConsumer<HomeScreenBloc, HomeScreenState> _buildWordTextFormField() {
-    return BlocConsumer(
+    return BlocConsumer<HomeScreenBloc, HomeScreenState>(
+      buildWhen: (previous, current) => current is UpdateWord,
       listenWhen: (previous, current) => current is UpdateWord,
       listener: (context, state) {
         if (state is UpdateWord) {
@@ -143,6 +145,7 @@ class _HomePageState extends State<HomePage> {
 
   BlocConsumer<HomeScreenBloc, HomeScreenState> _buildMeaningTextFormField() {
     return BlocConsumer(
+      buildWhen: (previous, current) => current is UpdateMeaning,
       listenWhen: (previous, current) => current is UpdateMeaning,
       listener: (context, state) {
         if (state is UpdateMeaning) {
@@ -175,6 +178,7 @@ class _HomePageState extends State<HomePage> {
 
   BlocListener<HomeScreenBloc, HomeScreenState> _elevatedButton() {
     return BlocListener<HomeScreenBloc, HomeScreenState>(
+      listenWhen: (previous, current) => current is WordAdded,
         listener: (context, state) {
           if (state is WordAdded) {
             _clearFormField();

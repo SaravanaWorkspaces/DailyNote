@@ -11,11 +11,12 @@ final getItInstance = GetIt.I;
 Future<dynamic> init() async {
   getItInstance.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
 
+  getItInstance.registerFactory(() => SpeechService());
+
   getItInstance.registerFactory<HomeScreenBloc>(
       () => HomeScreenBloc(HomeScreenInitialState()));
 
   getItInstance.registerFactory<WordListScreenBloc>(
       () => WordListScreenBloc(WordListInitial()));
-
-  getItInstance.registerFactory(() => SpeechService());
+  
 }
