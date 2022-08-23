@@ -1,5 +1,6 @@
-import 'package:daily_note/business_logic/word_list_cubit.dart';
-import 'package:daily_note/business_logic/word_list_state.dart';
+import 'package:daily_note/business_logic/word_list/word_list_event.dart';
+import 'package:daily_note/business_logic/word_list/word_list_screen_bloc.dart';
+import 'package:daily_note/business_logic/word_list/word_list_state.dart';
 import 'package:daily_note/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,8 +20,8 @@ class WordListPage extends StatelessWidget {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context, false)),
         ),
-        body: BlocProvider<WordListCubit>(
-          create: (_) => getItInstance<WordListCubit>(),
+        body: BlocProvider<WordListScreenBloc>(
+          create: (_) => getItInstance<WordListScreenBloc>(),
           child: const WordListView(),
         ),
       ),
@@ -38,15 +39,15 @@ class WordListView extends StatefulWidget {
 class _WordListViewState extends State<WordListView> {
   @override
   void initState() {
-    context.read<WordListCubit>().loadWordList();
+    context.read<WordListScreenBloc>().add(GetWordList());
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WordListCubit, WordListState>(builder: (context, state) {
-      if (state is WordList) {
-        return _buildListView(state.data);
+    return BlocBuilder<WordListScreenBloc, WordListScreenState>(builder: (context, state) {
+      if (state is LoadWordList) {
+        return _buildListView(state.list);
       }
       return _buildFriendlyText();
     });
