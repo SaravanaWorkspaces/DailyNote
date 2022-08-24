@@ -77,7 +77,7 @@ class _AddWordPageState extends State<AddWordPage> {
           ),
         )
       ],
-      title: const Text("Home"),
+      title: const Text("Add Word"),
       leading: IconButton(
         onPressed: () => Navigator.pop(context),
         icon: const Icon(Icons.arrow_back),

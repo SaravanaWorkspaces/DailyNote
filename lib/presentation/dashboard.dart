@@ -13,41 +13,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Home"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddWordScreen(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
+      appBar: AppBar(
+        title: const Text("Home"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddWordScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.add,
+              color: Colors.white,
             ),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const WordListScreen(),
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.list,
-                color: Colors.white,
-              ),
-            )
-          ],
-        ),
-        body: const _DashboardPage(),
-      );
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const WordListScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.list,
+              color: Colors.white,
+            ),
+          )
+        ],
+      ),
+      body: const _DashboardPage(),
+    );
   }
 }
 
@@ -61,6 +61,62 @@ class _DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<_DashboardPage> {
   @override
   Widget build(BuildContext context) {
-    return const Text("Hey");
+    return _pageContainer();
   }
+}
+
+Widget _pageContainer() {
+  return Container(
+    child: _tileView(),
+  );
+}
+
+GridView _tileView() {
+  return GridView.count(
+    primary: false,
+    padding: const EdgeInsets.all(20),
+    crossAxisSpacing: 10,
+    mainAxisSpacing: 10,
+    crossAxisCount: 2,
+    children: <Widget>[
+      _buildTileView("Today", "Count", "10"),
+      _buildTileView("Test", "Today test", ""),
+    ],
+  );
+}
+
+Widget _buildTileView(String title, String secondaryText, String value) {
+  return Center(
+    child: Card(
+      elevation: 8,
+      color: Colors.green[600],
+      child: InkWell(
+        splashColor: Colors.black.withAlpha(30),
+        onTap: () {},
+        child: SizedBox(
+          height: 300,
+          width: 300,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 24),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  secondaryText + ": " + value,
+                  style: const TextStyle(fontSize: 18),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
