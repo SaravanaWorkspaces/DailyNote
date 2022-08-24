@@ -7,23 +7,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../model/Word.dart';
 
-class WordListPage extends StatelessWidget {
-  const WordListPage({Key? key}) : super(key: key);
+class WordListScreen extends StatefulWidget {
+  const WordListScreen({Key? key}) : super(key: key);
 
   @override
+  State<WordListScreen> createState() => _WordListScreenState();
+}
+
+class _WordListScreenState extends State<WordListScreen> {
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Word list"),
-          leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context, false)),
-        ),
-        body: BlocProvider<WordListScreenBloc>(
-          create: (_) => getItInstance<WordListScreenBloc>(),
-          child: const WordListView(),
-        ),
+    return Scaffold(
+      appBar: _buildAppBar(context),
+      body: BlocProvider<WordListScreenBloc>(
+        create: (_) => getItInstance<WordListScreenBloc>(),
+        child: const WordListView(),
       ),
     );
   }
@@ -86,4 +84,14 @@ class _WordListViewState extends State<WordListView> {
       ),
     );
   }
+}
+
+AppBar _buildAppBar(BuildContext context) {
+  return AppBar(
+    title: const Text("Word list"),
+    leading: IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () => Navigator.pop(context),
+    ),
+  );
 }

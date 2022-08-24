@@ -1,41 +1,40 @@
-import 'package:daily_note/business_logic/homescreen/home_screen_bloc.dart';
-import 'package:daily_note/business_logic/homescreen/home_screen_event.dart';
-import 'package:daily_note/business_logic/homescreen/home_screen_state.dart';
+import 'package:daily_note/business_logic/addword/addword_bloc.dart';
+import 'package:daily_note/business_logic/addword/addword_screen_event.dart';
+import 'package:daily_note/business_logic/addword/addword_screen_state.dart';
 import 'package:daily_note/locator.dart';
 import 'package:daily_note/presentation/word_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class AddWordScreen extends StatefulWidget {
+  const AddWordScreen({Key? key}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _AddWordScreenState createState() => _AddWordScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _AddWordScreenState extends State<AddWordScreen> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: MultiBlocProvider(
+    return MultiBlocProvider(
       providers: [
-        BlocProvider<HomeScreenBloc>(
-          create: (_) => getItInstance<HomeScreenBloc>(),
+        BlocProvider<AddScreenBloc>(
+          create: (_) => getItInstance<AddScreenBloc>(),
         ),
       ],
-      child: const HomePage(),
-    ));
+      child: const AddWordPage(),
+    );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class AddWordPage extends StatefulWidget {
+  const AddWordPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<AddWordPage> createState() => _AddWordPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _AddWordPageState extends State<AddWordPage> {
   final _wordEditController = TextEditingController();
   final _meaningEditController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -79,6 +78,10 @@ class _HomePageState extends State<HomePage> {
         )
       ],
       title: const Text("Home"),
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(Icons.arrow_back),
+      ),
     );
   }
 
@@ -109,8 +112,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocConsumer<HomeScreenBloc, HomeScreenState> _buildWordTextFormField() {
-    return BlocConsumer<HomeScreenBloc, HomeScreenState>(
+  BlocConsumer<AddScreenBloc, AddWordState> _buildWordTextFormField() {
+    return BlocConsumer<AddScreenBloc, AddWordState>(
       buildWhen: (previous, current) => current is UpdateWord,
       listenWhen: (previous, current) => current is UpdateWord,
       listener: (context, state) {
@@ -133,7 +136,7 @@ class _HomePageState extends State<HomePage> {
               labelText: "Add Word",
               suffixIcon: IconButton(
                 onPressed: () {
-                  context.read<HomeScreenBloc>().add(ListenWord());
+                  context.read<AddScreenBloc>().add(ListenWord());
                 },
                 icon: const Icon(Icons.mic),
               ),
@@ -143,7 +146,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocConsumer<HomeScreenBloc, HomeScreenState> _buildMeaningTextFormField() {
+  BlocConsumer<AddScreenBloc, AddWordState> _buildMeaningTextFormField() {
     return BlocConsumer(
       buildWhen: (previous, current) => current is UpdateMeaning,
       listenWhen: (previous, current) => current is UpdateMeaning,
@@ -158,7 +161,7 @@ class _HomePageState extends State<HomePage> {
             decoration: InputDecoration(
                 suffixIcon: IconButton(
                   onPressed: () {
-                    context.read<HomeScreenBloc>().add(ListenMeaning());
+                    context.read<AddScreenBloc>().add(ListenMeaning());
                   },
                   icon: const Icon(Icons.mic),
                 ),
@@ -176,9 +179,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  BlocListener<HomeScreenBloc, HomeScreenState> _elevatedButton() {
-    return BlocListener<HomeScreenBloc, HomeScreenState>(
-      listenWhen: (previous, current) => current is WordAdded,
+  BlocListener<AddScreenBloc, AddWordState> _elevatedButton() {
+    return BlocListener<AddScreenBloc, AddWordState>(
+        listenWhen: (previous, current) => current is WordAdded,
         listener: (context, state) {
           if (state is WordAdded) {
             _clearFormField();
@@ -213,14 +216,14 @@ class _HomePageState extends State<HomePage> {
   void _addWord() async {
     final form = _formKey.currentState!;
     if (form.validate()) {
-      word    = _wordEditController.text;
+      word = _wordEditController.text;
       meaning = _meaningEditController.text;
-      context.read<HomeScreenBloc>().add(AddWord(word, meaning));
+      context.read<AddScreenBloc>().add(AddWord(word, meaning));
     }
   }
 
   void _launchWordList() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const WordListPage()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const WordListScreen()));
   }
 }

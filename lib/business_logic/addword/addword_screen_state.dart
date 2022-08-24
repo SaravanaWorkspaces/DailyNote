@@ -1,31 +1,31 @@
 import 'package:equatable/equatable.dart';
 
-class HomeScreenState extends Equatable {
+class AddWordState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-class HomeScreenInitialState extends HomeScreenState {
+class HomeScreenInitialState extends AddWordState {
   HomeScreenInitialState(): super();
 }
 
-class UpdateWord extends HomeScreenState {
+class UpdateWord extends AddWordState {
   final String? word;
   UpdateWord(this.word);
   @override
   List<Object?> get props => [word];
 }
 
-class UpdateMeaning extends HomeScreenState {
+class UpdateMeaning extends AddWordState {
   final String? word;
   UpdateMeaning(this.word);
   @override
   List<Object?> get props => [word];
 }
 
-class WordAdded extends HomeScreenState {}
+class WordAdded extends AddWordState {}
 
-class WordFailed extends HomeScreenState {
+class WordFailed extends AddWordState {
   final String message;
   WordFailed(this.message);
 }
