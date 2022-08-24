@@ -1,5 +1,5 @@
-import 'package:daily_note/business_logic/addword/addword_screen_event.dart';
-import 'package:daily_note/business_logic/addword/addword_screen_state.dart';
+import 'package:daily_note/business_logic/addword/addword_event.dart';
+import 'package:daily_note/business_logic/addword/addword_state.dart';
 import 'package:daily_note/locator.dart';
 import 'package:daily_note/model/Word.dart';
 import 'package:daily_note/repo/database-helper.dart';

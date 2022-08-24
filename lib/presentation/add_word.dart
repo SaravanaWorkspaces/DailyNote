@@ -1,6 +1,6 @@
 import 'package:daily_note/business_logic/addword/addword_bloc.dart';
-import 'package:daily_note/business_logic/addword/addword_screen_event.dart';
-import 'package:daily_note/business_logic/addword/addword_screen_state.dart';
+import 'package:daily_note/business_logic/addword/addword_event.dart';
+import 'package:daily_note/business_logic/addword/addword_state.dart';
 import 'package:daily_note/locator.dart';
 import 'package:daily_note/presentation/word_list.dart';
 import 'package:flutter/material.dart';
