@@ -89,7 +89,7 @@ Widget _buildTileView(String title, String secondaryText, String value) {
   return Center(
     child: Card(
       elevation: 8,
-      color: Colors.green[600],
+      color:const Color.fromARGB(255, 66, 146, 226),
       child: InkWell(
         splashColor: Colors.black.withAlpha(30),
         onTap: () {},
@@ -103,14 +103,14 @@ Widget _buildTileView(String title, String secondaryText, String value) {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 24),
+                  style: const TextStyle(color: Colors.white, fontSize: 24),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 Text(
                   secondaryText + ": " + value,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
                 )
               ],
             ),

@@ -68,7 +68,7 @@ class DatabaseHelper {
   Future<int> update(Word word) async {
     final db = await database;
     final result = db.update(tableWord, word.toJson(),
-        where: '${WordFields.id}', whereArgs: [word.id]);
+        where: WordFields.id, whereArgs: [word.id]);
     return result;
   }
 

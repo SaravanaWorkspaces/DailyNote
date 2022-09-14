@@ -42,8 +42,9 @@ class AddScreenBloc extends Bloc<AddScreenEvent, AddWordState> {
 
   void _addWord(AddWord event, Emitter<AddWordState> emit) async {
     try {
+      final createdTs = DateTime.now().millisecondsSinceEpoch;
       await getItInstance<DatabaseHelper>()
-          .create(Word(word: event.word, meaning: event.meaning));
+          .create(Word(word: event.word, meaning: event.meaning, createdTs: createdTs));
       emit(WordAdded());
     } catch (e) {
       emit(WordFailed(e.toString()));
