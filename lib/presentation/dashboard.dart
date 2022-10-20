@@ -1,6 +1,11 @@
+import 'package:daily_note/business_logic/dashboard/dashboard_bloc.dart';
+import 'package:daily_note/business_logic/dashboard/dashboard_event.dart';
+import 'package:daily_note/business_logic/dashboard/dashboard_state.dart';
+import 'package:daily_note/locator.dart';
 import 'package:daily_note/presentation/add_word.dart';
 import 'package:daily_note/presentation/word_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -12,47 +17,49 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddWordScreen(),
+    return BlocProvider(
+        create: (context) => getItInstance<DashboardBloc>(),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Home"),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddWordScreen(),
+                    ),
+                  ).then((_) => setState(() {}));
+                },
+                icon: const Icon(
+                  Icons.add,
+                  color: Colors.white,
                 ),
-              );
-            },
-            icon: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WordListScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.list,
+                  color: Colors.white,
+                ),
+              )
+            ],
           ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const WordListScreen(),
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.list,
-              color: Colors.white,
-            ),
-          )
-        ],
-      ),
-      body: const _DashboardPage(),
-    );
+          body: _DashboardPage(),
+        ));
   }
 }
 
 class _DashboardPage extends StatefulWidget {
-  const _DashboardPage({Key? key}) : super(key: key);
+  _DashboardPage({Key? key}) : super(key: key);
 
   @override
   State<_DashboardPage> createState() => _DashboardPageState();
@@ -71,25 +78,37 @@ Widget _pageContainer() {
   );
 }
 
-GridView _tileView() {
-  return GridView.count(
-    primary: false,
-    padding: const EdgeInsets.all(20),
-    crossAxisSpacing: 10,
-    mainAxisSpacing: 10,
-    crossAxisCount: 2,
-    children: <Widget>[
-      _buildTileView("Today", "Count", "10"),
-      _buildTileView("Test", "Today test", ""),
-    ],
+BlocBuilder<DashboardBloc, DashboardState> _tileView() {
+  return BlocBuilder(
+    builder: (context, state) {
+      context.read<DashboardBloc>().add(DashboardLoaded());
+      var count = 0;
+      var score = 0;
+      if (state is TodayCount) {
+        count = state.count;
+      } else if (state is TodayScore) {
+        score = state.testScore;
+      }
+      return GridView.count(
+        primary: false,
+        padding: const EdgeInsets.all(20),
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        crossAxisCount: 2,
+        children: <Widget>[
+          _buildTileView("Today", "Count", count),
+          _buildTileView("Test", "Today test", score),
+        ],
+      );
+    },
   );
 }
 
-Widget _buildTileView(String title, String secondaryText, String value) {
+Widget _buildTileView(String title, String secondaryText, num value) {
   return Center(
     child: Card(
       elevation: 8,
-      color:const Color.fromARGB(255, 66, 146, 226),
+      color: const Color.fromARGB(255, 66, 146, 226),
       child: InkWell(
         splashColor: Colors.black.withAlpha(30),
         onTap: () {},
@@ -109,7 +128,7 @@ Widget _buildTileView(String title, String secondaryText, String value) {
                   height: 10,
                 ),
                 Text(
-                  secondaryText + ": " + value,
+                  secondaryText + ": $value",
                   style: const TextStyle(color: Colors.white, fontSize: 18),
                 )
               ],

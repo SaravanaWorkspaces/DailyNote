@@ -27,9 +27,11 @@ class DatabaseHelper {
     const idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
     const textType = 'TEXT NOT NULL';
     const textTypeUnique = 'TEXT NOT NULL UNIQUE';
+    const integerType = "INTEGER";
 
     await db.execute(
-        'CREATE TABLE $tableWord (${WordFields.id} $idType, ${WordFields.word} $textTypeUnique, ${WordFields.meaning} $textType)');
+        'CREATE TABLE $tableWord (${WordFields.id} $idType, ${WordFields.word} $textTypeUnique,'
+        +' ${WordFields.meaning} $textType, ${WordFields.createdTs} $integerType)');
   }
 
   Future<Word> create(Word word) async {
@@ -70,6 +72,18 @@ class DatabaseHelper {
     final result = db.update(tableWord, word.toJson(),
         where: WordFields.id, whereArgs: [word.id]);
     return result;
+  }
+
+  Future<int> getTodayTotalCount() async {
+    final now = DateTime.now();
+    final startTs =
+        DateTime.utc(now.year, now.month, now.day).millisecondsSinceEpoch;
+    final db = await database;
+    final query =
+        "SELECT * FROM ${tableWord} WHERE ${WordFields.createdTs}>$startTs" +
+            " AND ${WordFields.createdTs}<${now.millisecondsSinceEpoch}";
+    final result = await db.rawQuery(query);
+    return result.length;
   }
 
   Future close() async {

@@ -15,21 +15,28 @@ class Word {
   final String meaning;
   final int createdTs;
 
-  const Word({this.id, required this.word, required this.meaning, required this.createdTs});
+  const Word(
+      {this.id,
+      required this.word,
+      required this.meaning,
+      required this.createdTs});
 
-  Word copy({int? id, String? word, String? meaning}) => Word(
+  Word copy({int? id, String? word, String? meaning, int? createdTs}) => Word(
       id: id ?? this.id,
       word: word ?? this.word,
       meaning: meaning ?? this.meaning,
-      createdTs: createdTs);
+      createdTs: createdTs ?? this.createdTs);
 
-  Map<String, Object?> toJson() =>
-      {WordFields.id: id, WordFields.word: word, WordFields.meaning: meaning};
+  Map<String, Object?> toJson() => {
+        WordFields.id: id,
+        WordFields.word: word,
+        WordFields.meaning: meaning,
+        WordFields.createdTs: createdTs
+      };
 
   static Word fromJson(Map<String, Object?> json) => Word(
-    id : json[WordFields.id] as int?,
-    word : json[WordFields.word] as String,
-    meaning : json[WordFields.meaning] as String,
-    createdTs : json[WordFields.createdTs] as int
-  );
+      id: json[WordFields.id] as int?,
+      word: json[WordFields.word] as String,
+      meaning: json[WordFields.meaning] as String,
+      createdTs: json[WordFields.createdTs] as int);
 }

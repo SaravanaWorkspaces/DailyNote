@@ -1,5 +1,7 @@
 import 'package:daily_note/business_logic/addword/addword_bloc.dart';
 import 'package:daily_note/business_logic/addword/addword_state.dart';
+import 'package:daily_note/business_logic/dashboard/dashboard_bloc.dart';
+import 'package:daily_note/business_logic/dashboard/dashboard_state.dart';
 import 'package:daily_note/business_logic/word_list/word_list_screen_bloc.dart';
 import 'package:daily_note/business_logic/word_list/word_list_state.dart';
 import 'package:daily_note/repo/database-helper.dart';
@@ -19,4 +21,5 @@ Future<dynamic> init() async {
   getItInstance.registerFactory<WordListScreenBloc>(
       () => WordListScreenBloc(WordListInitial()));
   
+  getItInstance.registerFactory<DashboardBloc>(() => DashboardBloc(DashboardInitial()));
 }
