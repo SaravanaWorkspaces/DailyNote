@@ -184,6 +184,7 @@ class _AddWordPageState extends State<AddWordPage> {
         listenWhen: (previous, current) => current is WordAdded,
         listener: (context, state) {
           if (state is WordAdded) {
+            FocusScope.of(context).requestFocus(FocusNode());
             _clearFormField();
             ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("New word added successfully!")));
